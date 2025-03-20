@@ -1,4 +1,4 @@
-import {b} from "@main/modules";
+import {b} from "@main/hooks";
 
 const a = 1234;
 console.log(a);
