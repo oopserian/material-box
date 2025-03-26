@@ -1,3 +1,3 @@
-import { FileService } from "./file";
+import { LibraryService } from "./library";
 
-new FileService().register();
+new LibraryService();
