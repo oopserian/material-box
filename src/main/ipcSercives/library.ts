@@ -2,14 +2,18 @@ import { ipcMain } from "electron";
 import appModules from "@main/modules";
 import lib from "@main/lib";
 import fg from "fast-glob";
-// import compress from "@main/utils/compress";
 import path from "path";
+
 export class LibraryService {
     constructor() {
         this.register();
     }
     register() {
-        ipcMain.handle("selectLibrary", this.selectLibrary.bind(this));
+        ipcMain.handle("library", (event, action, params) => {
+            if (action === "select") {
+                this.selectLibrary();
+            }
+        });
     }
     async selectLibrary() {
         const result = await lib.dialog.selectFolder();
@@ -21,21 +25,15 @@ export class LibraryService {
         }
     }
     async initLibrary() {
-        const rootLibraryDir = appModules.setting.get().rootLibraryDir;
-        console.time("initLibrary");
+        const rootLibraryDir = appModules.setting.rootLibraryDir;
         const files = fg.stream("**", {
+            ignore: [".pptbox/**"],
             cwd: rootLibraryDir,
             dot: false,
         });
-        files.on("data", async (file) => {
-            const start = path.join(rootLibraryDir, file);
-            const dest = path.join(rootLibraryDir, file);
-            console.log(start, dest);
-            // const compressResult = await compress({
-            //     start,
-            //     dest,
-            // });
-            // console.log(compressResult);
+        files.on("data", async (filePath) => {
+            const inputPath = path.join(rootLibraryDir, filePath);
+            appModules.item.createItem(inputPath);
         });
         files.on("end", () => {
             console.log("end");

@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
 
 contextBridge.exposeInMainWorld('libraryAPI', {
-    selectLibrary: () => ipcRenderer.invoke('selectLibrary'),
+    selectLibrary: () => ipcRenderer.invoke('library.select'),
 });

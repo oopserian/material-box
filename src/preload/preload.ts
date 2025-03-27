@@ -1,1 +1,2 @@
-import "./modules/file";
+import "./modules/library";
+import "./modules/thumb";

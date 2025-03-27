@@ -8,6 +8,11 @@ const appModules = {
     library: new Library(),
     folder: new Folder(),
     item: new Item(),
-}
+};
+
+// appModules.setting.init();
+// appModules.library.init();
+// appModules.folder.init();
+// appModules.item.init();
 
 export default appModules;

@@ -1,8 +1,8 @@
 import fs from "fs";
-import { pathToFileURL } from "./url";
+import { pathToFileURL } from "@utils/url";
 
 interface CompressOptions {
-    start: string;          // 源文件路径
+    input: string;          // 源文件路径
     dest: string;           // 目标文件路径
     format?: string;        // 输出格式
     quality?: number;       // 压缩质量
@@ -17,7 +17,7 @@ interface ImageDimensions {
 const DEFAULT_OPTIONS = {
     format: 'image/jpeg',
     quality: 0.8,
-    maxSize: 1920
+    maxSize: 320
 };
 
 const WEBP_MAX_SIZE = 16383;
@@ -88,7 +88,7 @@ function determineOutputFormat(
  * 压缩图片
  */
 async function compress(options: CompressOptions): Promise<ImageDimensions | true> {
-    const { start, dest, format, quality, maxSize = DEFAULT_OPTIONS.maxSize } = options;
+    const { input, dest, format, quality, maxSize = DEFAULT_OPTIONS.maxSize } = options;
 
     return new Promise((resolve, reject) => {
         const img = new Image();
@@ -131,7 +131,7 @@ async function compress(options: CompressOptions): Promise<ImageDimensions | tru
         };
 
         // 添加时间戳防止缓存
-        const imageUrl = `${pathToFileURL(start).href}?v=${Date.now()}`;
+        const imageUrl = `${pathToFileURL(input).href}?v=${Date.now()}`;
         img.src = imageUrl;
     });
 }

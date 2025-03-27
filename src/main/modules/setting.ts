@@ -12,10 +12,12 @@ export class Setting {
     userSettingName: 'Setting.json';
     userSettingPath: string;
     constructor() {
+    }
+    init() {
         const userData = app.getPath('userData');
         this.userSettingPath = path.normalize(userData + "/" + this.userSettingName);
         if (!fs.existsSync(this.userSettingPath)) {
-            fs.writeFileSync(this.userSettingPath, JSON.stringify({}, null, 2));
+            fs.writeFileSync(this.userSettingPath, "{}");
         };
         const setting = JSON.parse(fs.readFileSync(this.userSettingPath, 'utf8'));
         this.setting = setting;
@@ -24,7 +26,7 @@ export class Setting {
         this.setting = params;
         fs.writeFileSync(this.userSettingPath, JSON.stringify(this.setting, null, 2));
     }
-    get() {
-        return this.setting;
+    get rootLibraryDir() {
+        return this.setting.rootLibraryDir;
     }
 }

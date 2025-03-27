@@ -8,4 +8,6 @@ export class Folder {
     folder: FolderData;
     constructor() {
     }
+    init() {
+    }
 }
