@@ -1,5 +1,6 @@
 import { ipcMain } from "electron";
-import appModules from "@main/modules";
+import { appModules } from "@main/modules";
+import { registerIPC } from "@utils/electron";
 import lib from "@main/lib";
 import fg from "fast-glob";
 import path from "path";
@@ -9,11 +10,8 @@ export class LibraryService {
         this.register();
     }
     register() {
-        ipcMain.handle("library", (event, action, params) => {
-            if (action === "select") {
-                this.selectLibrary();
-            }
-        });
+        registerIPC("library:select", () => this.selectLibrary());
+        registerIPC("library:update", (_, params) => appModules.setting.update(params));
     }
     async selectLibrary() {
         const result = await lib.dialog.selectFolder();

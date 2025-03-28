@@ -17,5 +17,6 @@
       "@preload/*": ["src/preload/*"],
       "@utils/*": ["src/utils/*"]
     }
-  }
+  },
+  "include": ["src/**/*"]
 }

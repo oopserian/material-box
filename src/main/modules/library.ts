@@ -1,4 +1,4 @@
-import appModules from ".";
+import { appModules } from ".";
 import fs from "fs";
 import path from "path";
 import HashUtil from "@utils/hash";
@@ -11,8 +11,7 @@ export interface LibraryData {
 export class Library {
     libraryCachePath: string;
     library: LibraryData;
-    constructor() {
-    }
+    constructor() {}
     init() {
         const rootLibraryDir = appModules.setting.rootLibraryDir;
         const userData = app.getPath('userData');

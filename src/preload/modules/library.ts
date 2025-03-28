@@ -1,5 +1,6 @@
-import { contextBridge, ipcRenderer } from "electron";
+import { renderInvoke } from "@utils/electron";
 
-contextBridge.exposeInMainWorld('libraryAPI', {
-    selectLibrary: () => ipcRenderer.invoke('library.select'),
-});
+export const libraryAPI = {
+    select: () => renderInvoke('library:select'),
+    update: (params: any) => renderInvoke('library:update', params),
+};

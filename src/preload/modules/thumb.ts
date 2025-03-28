@@ -1,5 +1,5 @@
 import { ipcRenderer } from "electron";
-import compress from "@preload/utils/compress";
+import compress from "@utils/compress";
 
 ipcRenderer.on('thumb.compress', (_, data) => {
     let { input, dest } = data;

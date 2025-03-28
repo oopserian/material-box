@@ -1,3 +1,7 @@
 import { LibraryService } from "./library";
+import { SettingService } from "./setting";
 
-new LibraryService();
+export default () => {
+    new LibraryService();
+    new SettingService();
+};

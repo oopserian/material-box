@@ -1,4 +1,4 @@
-import appModules from ".";
+import { appModules } from ".";
 import path from "path";
 import fs from "fs";
 import HashUtil from "@utils/hash";
@@ -20,8 +20,7 @@ export interface ItemData {
 export class Item {
     itemsCachePath: string = "";
     items: { [key: string]: ItemData } = {};
-    constructor() {
-    }
+    constructor() {}
     init() {
         this.itemsCachePath = path.join(appModules.library.libraryCachePath, "items");
         if (!fs.existsSync(this.itemsCachePath)) {

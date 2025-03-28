@@ -5,14 +5,20 @@
 </template>
 
 <script lang="ts" setup>
+import { windowAPI } from '@utils/renderer-api';
+import { onMounted } from 'vue';
+
 const selectLibrary = async () => {
-    await window.libraryAPI.selectLibrary();
 };
+onMounted(async () => {
+    const a = await windowAPI('setting').getAll();
+    console.log(a);
+})
 </script>
 
 <style scoped>
 /* 添加样式 */
-#app{
+#app {
     width: 100%;
     height: 100vh;
     display: flex;

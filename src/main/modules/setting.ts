@@ -11,8 +11,7 @@ export class Setting {
     setting: SettingParams;
     userSettingName: 'Setting.json';
     userSettingPath: string;
-    constructor() {
-    }
+    constructor() {}
     init() {
         const userData = app.getPath('userData');
         this.userSettingPath = path.normalize(userData + "/" + this.userSettingName);
@@ -28,5 +27,8 @@ export class Setting {
     }
     get rootLibraryDir() {
         return this.setting.rootLibraryDir;
+    }
+    get getAll() {
+        return this.setting;
     }
 }

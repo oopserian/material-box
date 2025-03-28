@@ -1,5 +1,5 @@
-import fs from "fs";
 import { pathToFileURL } from "@utils/url";
+import fs from "fs";
 
 interface CompressOptions {
     input: string;          // 源文件路径
