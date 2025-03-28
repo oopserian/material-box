@@ -2,7 +2,7 @@ import { app, BrowserWindow } from 'electron';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
 import registerAllIPC from "@main/ipcSercives";
-import { initModules } from "@main/modules";
+import { appModules, initModules } from "@main/modules";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -44,6 +44,16 @@ app.on('ready', createWindow);
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
+  }
+});
+
+app.on('will-quit', async(event) => {
+  event.preventDefault();
+  try{
+    await appModules.library.generateLibraryCache();
+  }catch(err){}finally{
+    // 这样退出不会触发will-quit等事件
+    process.exit(0);
   }
 });
 

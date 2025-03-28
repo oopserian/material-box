@@ -16,4 +16,11 @@ interface SettingEvents {
     }
 }
 
-type EventPayloadMapping = LibraryEvents & SettingEvents
+interface ItemEvents{
+    "item:getAll":{
+        params: [],
+        result: import('@main/modules/item').ItemData[],
+    }
+}
+
+type EventPayloadMapping = LibraryEvents & SettingEvents & ItemEvents

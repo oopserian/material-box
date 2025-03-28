@@ -1,7 +1,5 @@
-import { ipcMain } from "electron";
 import { appModules } from "@main/modules";
 import { registerIPC } from "@utils/electron";
-import lib from "@main/lib";
 import fg from "fast-glob";
 import path from "path";
 
@@ -10,35 +8,7 @@ export class LibraryService {
         this.register();
     }
     register() {
-        registerIPC("library:select", () => this.selectLibrary());
+        registerIPC("library:select", () => appModules.library.select());
         registerIPC("library:update", (_, params) => appModules.setting.update(params));
-    }
-    async selectLibrary() {
-        const result = await lib.dialog.selectFolder();
-        if (result) {
-            appModules.setting.update({
-                rootLibraryDir: result,
-            });
-            this.initLibrary();
-        }
-    }
-    async initLibrary() {
-        const rootLibraryDir = appModules.setting.rootLibraryDir;
-        const files = fg.stream("**", {
-            ignore: [".pptbox/**"],
-            cwd: rootLibraryDir,
-            dot: false,
-        });
-        files.on("data", async (filePath) => {
-            const inputPath = path.join(rootLibraryDir, filePath);
-            appModules.item.createItem(inputPath);
-        });
-        files.on("end", () => {
-            console.log("end");
-            console.timeEnd("initLibrary");
-        });
-        files.on("error", (error) => {
-            console.log(error);
-        });
     }
 }

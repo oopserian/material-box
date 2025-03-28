@@ -3,9 +3,12 @@ import path from "path";
 import fs from "fs";
 import HashUtil from "@utils/hash";
 import { getFocusedWindow } from "@main/lib/window";
-import { imageSizeFromFile } from 'image-size/fromFile'
+import { imageSizeFromFile } from 'image-size/fromFile';
+import lineByLine from "n-readlines";
+import { app } from "electron";
 
 export interface ItemData {
+    id: string;
     name: string;
     size: number;
     btime: Date;
@@ -19,24 +22,58 @@ export interface ItemData {
 
 export class Item {
     itemsCachePath: string = "";
-    items: { [key: string]: ItemData } = {};
-    constructor() {}
+    itemsMap: { [key: string]: ItemData } = {};
+    items: ItemData[] = []
+    constructor() { }
     init() {
-        this.itemsCachePath = path.join(appModules.library.libraryCachePath, "items");
+        this.itemsCachePath = path.join(appModules.library.libraryMetaCachePath, "items");
         if (!fs.existsSync(this.itemsCachePath)) {
             fs.mkdirSync(this.itemsCachePath);
         };
+        this.cacheToItems();
+    }
+    cacheToItems() {
+        const userData = app.getPath('userData');
+        const metaCacheName = HashUtil.fnv1a(appModules.setting.rootLibraryDir).toString() + '.txt';
+        const metaCacheDirPath = path.join(userData, "library-caches");
+        const metaCachePath = path.join(metaCacheDirPath, metaCacheName);
+        if (!fs.existsSync(metaCachePath)) {
+            // 暂无缓存文件
+            return
+        };
+        console.time("【本地缓存】读取新版缓存");
+        const liner = new lineByLine(metaCachePath, {
+            readChunk: 2048
+        });
+        let line;
+        let lines = [];
+        while (line = liner.next()) {
+            lines.push(line.toString());
+        }
+        lines.forEach((line) => {
+            try {
+                const item = JSON.parse(line) as ItemData;
+                if (item) {
+                    this.itemsMap[item.id] = item;
+                    this.items.push(item);
+                }
+            }
+            catch (err) { }
+        });
+        console.timeEnd("【本地缓存】读取新版缓存");
     }
     async createItem(rawPath: string) {
-        const { id, size, btime, mtime, ext, width, height } = await this.getItemBaseInfo(rawPath);
+        const { id, size, btime, mtime, ext } = await this.getItemBaseInfo(rawPath);
+        const { width, height } = await this.getItemSize(rawPath);
         const fileName = path.basename(rawPath, ext);
-        const thumbName = fileName + ".thumb" + ext;
+        const thumbName = fileName + ".thumb.png";
         const itemDirPath = path.join(this.itemsCachePath, id);
         const dest = path.join(itemDirPath, thumbName);
         if (!fs.existsSync(itemDirPath)) {
             fs.mkdirSync(itemDirPath);
         };
         this.createMetadata(id, {
+            id,
             name: fileName,
             size,
             btime,
@@ -56,22 +93,19 @@ export class Item {
         });
     }
     createMetadata(itemId: string, metadata: ItemData) {
-        this.items[itemId] = metadata;
+        this.itemsMap[itemId] = metadata;
         const metadataPath = path.join(this.itemsCachePath, itemId, "metadata.json");
         fs.writeFileSync(metadataPath, JSON.stringify(metadata));
     }
     async getItemBaseInfo(rawPath: string) {
         const stat = fs.statSync(rawPath);
         const ext = path.extname(rawPath);
-        const { width, height } = await imageSizeFromFile(rawPath);
         const baseInfo = {
             id: "",
             size: stat.size,
             btime: stat.birthtime,
             mtime: stat.mtime,
-            ext,
-            width,
-            height
+            ext
         }
         if (process.platform === 'win32') {
             // TODO：windows上使用fsutil获取文件id
@@ -80,5 +114,9 @@ export class Item {
             baseInfo.id = HashUtil.fnv1a(stat.birthtimeMs + stat.ino + ext).toString();
         }
         return baseInfo;
+    }
+    async getItemSize(rawPath: string) {
+        const { width, height } = await imageSizeFromFile(rawPath);
+        return { width, height };
     }
 }
