@@ -50,7 +50,7 @@ export class Folder {
                 let folder = folderMap.get(key);
                 if (!folder) {
                     folder = {
-                        id: HashUtil.fnv1a(folderStat.birthtimeMs),
+                        id: this.generateFolderId(folderStat.birthtimeMs),
                         name,
                         children: [],
                         mtime: Date.now(),
@@ -64,5 +64,8 @@ export class Folder {
         }
 
         return rootFolders;
+    }
+    generateFolderId(birthtimeMs:number):string{
+        return HashUtil.fnv1a(birthtimeMs).toString();
     }
 }

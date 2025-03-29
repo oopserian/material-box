@@ -75,7 +75,6 @@ export class Library {
         });
         files.on("data", async (filePath) => {
             const inputPath = path.join(this.library.rootPath, filePath);
-            console.log(inputPath);
             appModules.item.createItem(inputPath);
         });
         files.on("end", () => {

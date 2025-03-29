@@ -62,7 +62,7 @@ export class Item {
         console.timeEnd("「读取」items缓存");
     }
     async createItem(rawPath: string) {
-        const { id, size, btime, mtime, ext } = await this.getItemBaseInfo(rawPath);
+        const { id, size, btime, mtime, ext, folder } = await this.getItemBaseInfo(rawPath);
         const { width, height } = await this.getItemSize(rawPath);
         const fileName = path.basename(rawPath, ext);
         const thumbName = fileName + ".thumb.png";
@@ -79,7 +79,7 @@ export class Item {
             mtime,
             ext: ext.slice(1),
             tags: [],
-            folder: "",
+            folder,
             width,
             height,
         });
@@ -97,10 +97,13 @@ export class Item {
         fs.writeFileSync(metadataPath, JSON.stringify(metadata));
     }
     async getItemBaseInfo(rawPath: string) {
+        const folderPath = path.dirname(rawPath);
+        const folderStat = fs.statSync(folderPath);
         const stat = fs.statSync(rawPath);
         const ext = path.extname(rawPath);
         const baseInfo = {
             id: "",
+            folder: appModules.folder.generateFolderId(folderStat.birthtimeMs),
             size: stat.size,
             btime: stat.birthtime,
             mtime: stat.mtime,

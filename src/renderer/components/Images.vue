@@ -5,9 +5,11 @@
             <p>{{ items?.length }}个文件</p>
         </div>
         <div class="images">
-            <img v-for="item in items" :key="item.id"
-                :src="'file://' + settings.rootLibraryDir + '/.pptbox/items/' + item.id + '/' + item.name + '.thumb.png'"
-                alt="" srcset="">
+            <div class="item" v-for="item in items" :key="item.id">
+                <img :src="'file://' + settings.rootLibraryDir + '/.pptbox/items/' + item.id + '/' + item.name + '.thumb.png'"
+                    alt="" srcset="">
+                <p>{{ item.name }}</p>
+            </div>
         </div>
     </div>
 </template>
@@ -50,15 +52,24 @@ onMounted(async () => {
     margin-bottom: 1rem;
 }
 
-.images{
+.images {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
 }
 
-.images>img {
+.images>.item {
     width: 100px;
+    object-fit: contain;
+    display: flex;
+    flex-direction: column;
+    font-size: 0.75rem;
+}
+
+.item>img{
+    width: 100%;
     height: 100px;
     object-fit: contain;
+    border: 1px solid #eee;
 }
 </style>
