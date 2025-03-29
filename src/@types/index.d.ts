@@ -16,6 +16,13 @@ interface SettingEvents {
     }
 }
 
+interface FolderEvents{
+    "folder:getAll":{
+        params: [],
+        result: import('@main/modules/folder').FolderData[],
+    }
+}
+
 interface ItemEvents{
     "item:getAll":{
         params: [],
@@ -23,4 +30,4 @@ interface ItemEvents{
     }
 }
 
-type EventPayloadMapping = LibraryEvents & SettingEvents & ItemEvents
+type EventPayloadMapping = LibraryEvents & SettingEvents & ItemEvents & FolderEvents

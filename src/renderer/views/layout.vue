@@ -10,8 +10,8 @@
 </template>
 
 <script lang="ts" setup>
-import Folder from "@renderer/components/folders.vue";
-import Images from "@renderer/components/images.vue";
+import Folder from "@renderer/components/Folders.vue";
+import Images from "@renderer/components/Images.vue";
 </script>
 
 <style scoped>

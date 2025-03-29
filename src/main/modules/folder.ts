@@ -3,6 +3,7 @@ import { appModules } from ".";
 import fg from "fast-glob";
 import fs from "fs";
 import HashUtil from "@utils/hash";
+import { app } from "electron";
 
 export interface FolderData {
     id: string | number;
@@ -12,12 +13,11 @@ export interface FolderData {
 }
 
 export class Folder {
-    folder: FolderData[] = [];
+    folders: FolderData[] = [];
     folderCacheName: string = 'folders.json';
     folderCachePath: string = '';
-    constructor() { }
     init() {
-        console.time("--创建所有folder");
+        console.time("「创建」folder");
         let libraryMetaCachePath = appModules.library.libraryMetaCachePath;
         let libraryRootPath = appModules.library.library.rootPath;
         this.folderCachePath = path.join(libraryMetaCachePath, this.folderCacheName);
@@ -26,12 +26,16 @@ export class Folder {
             cwd: libraryRootPath,
             dot: false,
             onlyDirectories: true,
-            // stats: true // 多30ms
+            // stats: true // +30ms
         });
-        this.folder = this.buildFolderTree(folders);
-        console.timeEnd("--创建所有folder");
+        this.folders = this.buildFolderTree(folders);
+        this.generateCache();
+        console.timeEnd("「创建」folder");
     }
-    buildFolderTree(paths: string[]): FolderData[] {
+    generateCache() {
+        fs.writeFileSync(this.folderCachePath, JSON.stringify(this.folders));
+    }
+    private buildFolderTree(paths: string[]): FolderData[] {
         const rootFolders: FolderData[] = [];
         const folderMap = new Map<string, FolderData>();
 

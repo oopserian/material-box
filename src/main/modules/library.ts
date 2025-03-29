@@ -28,12 +28,13 @@ export class Library {
         if (result) {
             appModules.setting.update({ rootLibraryDir: result });
             this.init();
+            appModules.item.init();
             this.generateLibraryItems();
         }
     }
     generateLibraryCache() {
         return new Promise((resolve, reject) => {
-            console.time("--生成库缓存");
+            console.time("「创建」库缓存");
             try {
                 const userData = app.getPath('userData');
                 const metaCacheName = HashUtil.fnv1a(this.library.rootPath).toString() + '.txt';
@@ -54,7 +55,7 @@ export class Library {
                 });
                 meataDatas.on("end", () => {
                     metaCacheStream.end();
-                    console.timeEnd("--生成库缓存");
+                    console.timeEnd("「创建」库缓存");
                     resolve(true);
                 });
                 meataDatas.on("error", (err) => {
@@ -74,6 +75,7 @@ export class Library {
         });
         files.on("data", async (filePath) => {
             const inputPath = path.join(this.library.rootPath, filePath);
+            console.log(inputPath);
             appModules.item.createItem(inputPath);
         });
         files.on("end", () => {
@@ -82,5 +84,8 @@ export class Library {
         files.on("error", (error) => {
             console.log(error);
         });
+    }
+    get rootPath(){
+        return this.library.rootPath
     }
 }

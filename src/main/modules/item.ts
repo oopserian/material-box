@@ -24,7 +24,6 @@ export class Item {
     itemsCachePath: string = "";
     itemsMap: { [key: string]: ItemData } = {};
     items: ItemData[] = []
-    constructor() { }
     init() {
         this.itemsCachePath = path.join(appModules.library.libraryMetaCachePath, "items");
         if (!fs.existsSync(this.itemsCachePath)) {
@@ -41,7 +40,7 @@ export class Item {
             // 暂无缓存文件
             return
         };
-        console.time("【本地缓存】读取新版缓存");
+        console.time("「读取」items缓存");
         const liner = new lineByLine(metaCachePath, {
             readChunk: 2048
         });
@@ -60,7 +59,7 @@ export class Item {
             }
             catch (err) { }
         });
-        console.timeEnd("【本地缓存】读取新版缓存");
+        console.timeEnd("「读取」items缓存");
     }
     async createItem(rawPath: string) {
         const { id, size, btime, mtime, ext } = await this.getItemBaseInfo(rawPath);

@@ -1,7 +1,5 @@
 import { appModules } from "@main/modules";
 import { registerIPC } from "@utils/electron";
-import fg from "fast-glob";
-import path from "path";
 
 export class LibraryService {
     constructor() {

@@ -9,15 +9,14 @@ export interface SettingParams {
 
 export class Setting {
     setting: SettingParams;
-    userSettingName: 'Setting.json';
+    userSettingName = 'Setting.json';
     userSettingPath: string;
-    constructor() {}
     init() {
         const userData = app.getPath('userData');
         this.userSettingPath = path.normalize(userData + "/" + this.userSettingName);
         if (!fs.existsSync(this.userSettingPath)) {
             fs.writeFileSync(this.userSettingPath, "{}");
-        };
+        }
         const setting = JSON.parse(fs.readFileSync(this.userSettingPath, 'utf8'));
         this.setting = setting;
     }
